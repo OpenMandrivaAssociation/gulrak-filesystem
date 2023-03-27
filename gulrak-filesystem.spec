@@ -5,17 +5,21 @@
 %define devname %mklibname %{name} -d
 %define libname %mklibname %{name} %major
 
-%bcond_without examples
-# FIXME: fails
+# FIXME: clang fails:
+# ... examples/dir.cpp:1:10: fatal error: 'chrono' file not found
+# #include <chrono>
+#           ^~~~~~~~
+%bcond_with examples
+# FIXME: it still requires catch2 v2
 %bcond_with tests
 
 Summary:	An implementation of C++17 std::filesystem for C++11 /C++14/C++17/C++20
 Name:		gulrak-filesystem
-Version:	1.5.12
+Version:	1.5.14
 Release:	1
 License:	MIT
 URL:		https://github.com/gulrak/filesystem
-Source0:	%{url}/archive/v%{version}/filesystem-%{version}.tar.gz
+Source0:	https://github.com/gulrak/filesystem/archive/v%{version}/filesystem-%{version}.tar.gz
 
 BuildRequires:	cmake
 BuildRequires:	ninja
@@ -77,13 +81,9 @@ sed -r -i 's|(include[[:blank:]]+")(catch.hpp")|\1catch2/\2|' test/*.cpp
 sed -r -i 's|[[:blank:]]+catch\.hpp||' test/CMakeLists.txt
 %endif
 
+sed -i -e "s|<chrono>|<bits/chrono>|g" examples/dir.cpp
+
 %build
-# FIXME: clang fails:
-# ... examples/dir.cpp:1:10: fatal error: 'chrono' file not found
-# #include <chrono>
-#           ^~~~~~~~
-export CC=gcc
-export CXX=g++
 %cmake \
 	-DGHC_FILESYSTEM_BUILD_EXAMPLES:BOOL=%{?with_examples:ON}%{?!with_examples:OFF} \
 	-DGHC_FILESYSTEM_BUILD_TESTING:BOOL=%{?with_tests:ON}%{?!with_tests:OFF} \
