@@ -15,7 +15,7 @@
 
 Summary:	An implementation of C++17 std::filesystem for C++11 /C++14/C++17/C++20
 Name:		gulrak-filesystem
-Version:	1.5.14
+Version:	1.5.16
 Release:	1
 License:	MIT
 URL:		https://github.com/gulrak/filesystem
@@ -72,7 +72,7 @@ with a regular std::filesystem should you use it in a mixed C++17 environment
 #----------------------------------------------------------------------------
 
 %prep
-%autosetup -n filesystem-%{version}
+%autosetup -n filesystem-1.5.16
 
 # Remove bundled Catch library and use the system version
 %if %{with tests}
